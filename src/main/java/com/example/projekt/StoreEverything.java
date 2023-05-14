@@ -4,10 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ProjektApplication {
+public class StoreEverything {
 
     public static void main(String[] args) {
-        SpringApplication.run(ProjektApplication.class, args);
+        SpringApplication.run(StoreEverything.class, args);
     }
-
 }

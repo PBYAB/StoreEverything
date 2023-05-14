@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tworzenie notatki</title>
+</head>
+<body>
+<h1 th:text="|Tworzenie notatki|"></h1>
+<form action="#" th:action="@{/informations/}" method="post">
+    <label for="noteName" th:text="|Nazwa notatki:|"></label><br>
+    <input type="text" id="noteName" name="noteName"><br>
+
+    <label for="categoryName" th:text="|Kategoria notatki:|"></label><br>
+    <input type="text" id="categoryName" name="categoryName"><br>
+
+    <label for="descriptionNote" th:text="|Opis notatki:|"></label><br>
+    <textarea id="descriptionNote" name="descriptionNote" rows="4" cols="50"></textarea><br><br>
+
+    <input type="submit" value="Utwórz notatkę" th:value="|Utwórz notatkę|">
+</form>
+</body>
+</html>

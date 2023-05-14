@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Informations</title>
+</head>
+<body>
+<h1 th:text="|Informations in the database|"></h1>
+
+<ol>
+    <li th:each="information : ${informations}">
+        <p>
+            <span th:text="|Name: ${information.name} |"></span>
+            <br>
+            <span th:text="|Date: ${#temporals.format(#temporals.createNow(), 'dd.MM.yyyy HH:mm:ss')} |"></span>
+            <br>
+            <span th:text="|Category: ${information.category.name} |"></span>
+            <br>
+            <span th:text="|Description: ${information.descirption} |"></span>
+            <br>
+        </p>
+    </li>
+</ol>
+
+</body>
+</html>

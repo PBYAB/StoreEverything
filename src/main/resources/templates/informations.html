@@ -3,24 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <title>Informations</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
 </head>
 <body>
-<h1 th:text="|Informations in the database|"></h1>
+<div class="container">
+    <h1 th:text="|Informations in the database|"></h1>
+    <hr>
+    <form method="get" action="#" th:action="@{/informations/category}">
+        <div class="form-group">
+            <label for="categorySelect">Filter by category:</label>
+            <select id="categorySelect" name="categoryName" class="form-control">
+                <option value="">All</option>
+                <option th:each="category : ${categories}" th:value="${category.name}" th:text="${category.name}"></option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+    <hr>
+    <ol class="list-group">
+        <li th:each="information : ${informations}" class="list-group-item">
+            <h5 class="card-title" th:text="|Name: ${information.name} |"></h5>
+            <p class="card-text">
+                <span th:text="|Date: ${information.creationTime} |"></span>
+                <br>
+                <span th:text="|Category: ${information.category.name} |"></span>
+                <br>
+                <span th:text="|Description: ${information.descirption} |"></span>
+                <br>
+            </p>
+        </li>
+    </ol>
+</div>
 
-<ol>
-    <li th:each="information : ${informations}">
-        <p>
-            <span th:text="|Name: ${information.name} |"></span>
-            <br>
-            <span th:text="|Date: ${#temporals.format(#temporals.createNow(), 'dd.MM.yyyy HH:mm:ss')} |"></span>
-            <br>
-            <span th:text="|Category: ${information.category.name} |"></span>
-            <br>
-            <span th:text="|Description: ${information.descirption} |"></span>
-            <br>
-        </p>
-    </li>
-</ol>
+
 
 </body>
 </html>

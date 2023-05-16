@@ -8,8 +8,12 @@ import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.context.annotation.SessionScope;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 @Getter
@@ -21,17 +25,9 @@ public class InformationRepository {
     public InformationRepository(){
         System.out.println("constructor");
         categories.add(new Category("strona www"));
-        informations.add(new Information("1","pb.com","wazna strona",new Category("strona www")));
+        LocalDateTime dateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+        String formattedDateTime = dateTime.format(formatter);
+        informations.add(new Information("1","pb.com","wazna strona",new Category("strona www"), formattedDateTime));
     }
-    /*
-    public String getInformationFromCategory(String category){
-        StringBuilder sb = new StringBuilder();
-        for(Information info : informations){
-            if(info.getCategory().getName().equals(category)){
-                sb.append(info.getName());
-                sb.append(", ");
-            }
-        }
-        return sb.toString();
-    }*/
 }

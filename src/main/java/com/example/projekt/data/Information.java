@@ -12,4 +12,5 @@ public class Information {
     private String descirption;
 
     private Category category;
+    private String creationTime;
 }

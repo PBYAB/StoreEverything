@@ -29,29 +29,6 @@ public class InformationService {
         return informationRepository.getInformations();
     }
 
-    public Information createInformation(String noteName, String categoryName, String descriptionNote) {
-        LocalDateTime dateTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-        String formattedDateTime = dateTime.format(formatter);
-
-        // Check if the category already exists in the repository
-        List<Category> categories = categoryRepository.getCategories();
-        Category category = categories.stream()
-                .filter(c -> c.getName().equals(categoryName))
-                .findFirst()
-                .orElse(null);
-
-        // If the category does not exist, create a new one
-        if (category == null) {
-            category = new Category(categoryName);
-            categories.add(category);
-        }
-
-        // Create the new information object and add it to the information repository
-        Information information = new Information(Integer.toString(informationRepository.getInformations().size() + 1), noteName, categoryName, category, formattedDateTime);
-        informationRepository.getInformations().add(information);
-        return information;
-    }
 
     public List<Information> getInformationsByCategoryName(String categoryName) {
         List<Information> informations = new ArrayList<>();
@@ -61,18 +38,6 @@ public class InformationService {
             }
         }
         return informations;
-    }
-
-    public Category createCategory(String categoryName) {
-        Category category = new Category(categoryName);
-        categoryRepository.getCategories().add(category);
-        return category;
-    }
-
-    public List<Category> getCategoriesByKeyword(String keyword) {
-        return categoryRepository.getCategories().stream()
-                .filter(category -> category.getName().toLowerCase().contains(keyword.toLowerCase()))
-                .collect(Collectors.toList());
     }
 
 }

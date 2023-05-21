@@ -1,9 +1,35 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Information</title>
+    <title>Edit Information</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
 </head>
 <body>
+<div class="container">
+    <h1>Edit Information</h1>
+    <hr>
+    <form method="post" th:action="@{/informations/save}" th:object="${information}">
+        <input type="hidden" th:field="*{id}">
+
+        <div class="form-group">
+            <label for="nameInput">Name:</label>
+            <input type="text" id="nameInput" name="name" class="form-control" th:field="*{name}">
+        </div>
+        <div class="form-group">
+            <label for="categoryInput">Category:</label>
+            <input type="text" id="categoryInput" name="category" class="form-control" th:value="${information.category}">
+        </div>
+        <div class="form-group">
+            <label for="descriptionInput">Description:</label>
+            <textarea id="descriptionInput" name="description" class="form-control" th:text="${information.description}"></textarea>
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
 </body>
 </html>

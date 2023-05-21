@@ -12,21 +12,27 @@
     <h1 th:text="|Informations in the database|"></h1>
     <hr>
     <form method="get" action="#" th:action="@{/informations/}">
-        <div class="form-group">
-            <label for="categorySelect">Filter by category:</label>
-            <select id="categorySelect" name="categoryName" class="form-control">
-                <option value="">All</option>
-                <option th:each="category : ${categories}" th:value="${category.name}" th:text="${category.name}"></option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="sortBySelect">Sort by:</label>
-            <select id="sortBySelect" name="sortBy" class="form-control">
-                <option value="name">Name</option>
-                <option value="creationTime">Creation Time</option>
-                <option value="category">Category</option>
-                <option value="categoryOccurrences">Category Occurrences</option>
-            </select>
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="filterByDateInput">Filter by date:</label>
+                <input type="date" id="filterByDateInput" name="filterByDate" class="form-control">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="categorySelect">Filter by category:</label>
+                <select id="categorySelect" name="categoryName" class="form-control">
+                    <option value="">All</option>
+                    <option th:each="category : ${categories}" th:value="${category.name}" th:text="${category.name}"></option>
+                </select>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="sortBySelect">Sort by:</label>
+                <select id="sortBySelect" name="sortBy" class="form-control">
+                    <option value="name">Name</option>
+                    <option value="creationTime">Creation Time</option>
+                    <option value="category">Category</option>
+                    <option value="categoryOccurrences">Category Occurrences</option>
+                </select>
+            </div>
         </div>
         <div class="form-group">
             <label for="sortDirectionSelect">Sort direction:</label>
@@ -46,12 +52,12 @@
                 <br>
                 <span th:text="|Category: ${information.category} |"></span>
                 <br>
-                <span th:text="|Description: ${information.descirption} |"></span>
+                <span th:text="|Description: ${information.getDescription} |"></span>
                 <br>
+                <a th:href="@{/informations/edit/{id}(id=${information.id})}" class="btn btn-primary">Edit</a>
             </p>
         </li>
     </ol>
 </div>
-
 </body>
 </html>

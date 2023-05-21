@@ -5,11 +5,12 @@ import com.example.projekt.data.Information;
 import com.example.projekt.services.CategoryService;
 import com.example.projekt.services.InformationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Controller
@@ -21,55 +22,6 @@ public class InformationController {
 
     @Autowired
     CategoryService categoryService;
-
-    @GetMapping("/")
-    public String getInformations(@RequestParam(required = false) String categoryName,
-                                  @RequestParam(required = false) String sortBy,
-                                  @RequestParam(required = false) String sortDirection,
-                                  Model model) {
-        List<Information> informations;
-        Sort.Direction direction = Sort.Direction.DESC;
-        String sortField = "creationTime";
-
-        if (sortDirection != null && sortDirection.equalsIgnoreCase("asc")) {
-            direction = Sort.Direction.ASC;
-        }
-
-        if (sortBy != null && !sortBy.isEmpty()) {
-            if (sortBy.equalsIgnoreCase("name")) {
-                sortField = "name";
-            } else if (sortBy.equalsIgnoreCase("creationTime")) {
-                sortField = "creationTime";
-            } else if (sortBy.equalsIgnoreCase("category")) {
-                sortField = "category";
-            } else if (sortBy.equalsIgnoreCase("categoryOccurrences")) {
-                sortField = "categoryOccurrences";
-            }
-        }
-
-        if (categoryName != null && !categoryName.isEmpty()) {
-            informations = informationService.getInformationRepository()
-                    .getInformationByCategory(categoryName, Sort.by(direction, sortField));
-        } else {
-            if (sortField.equals("categoryOccurrences")) {
-                informations = informationService.getAllInformationsSortedByCategoryOccurrences(Sort.by(direction, sortField));
-            } else {
-                informations = informationService.getInformationRepository()
-                        .findAll(Sort.by(direction, sortField));
-            }
-        }
-
-        model.addAttribute("informations", informations);
-        model.addAttribute("categories", categoryService.getCategoryRepository().findAll());
-
-        return "informations";
-    }
-
-
-
-
-
-
 
 
     @PostMapping("/")
@@ -96,15 +48,28 @@ public class InformationController {
     }
 
 
-    @GetMapping("/category")
-    public String getInformationsFromCategory(@RequestParam("categoryName") String category, Model model){
-        if(category.isEmpty()){
-            model.addAttribute("informations", informationService.getInformationRepository().findAll());
-        }
-        else {
-            model.addAttribute("informations", informationService.getInformationRepository().getInformationByCategory(category, Sort.by(Sort.Direction.ASC, "creationTime")));
-             }
-        model.addAttribute("categories", categoryService.getCategoryRepository().findAll());
-        return "informations";
-        }
+    @GetMapping("/edit/{id}")
+    public String editInformation(@PathVariable("id") Long id, Model model) {
+        Information information = informationService.getInformationRepository().findById(Math.toIntExact(id))
+                .orElseThrow(() -> new IllegalArgumentException("Invalid information id: " + id));
+        model.addAttribute("information", information);
+        return "information";
+    }
+
+    @PostMapping("/save")
+    public String updateInformation(@ModelAttribute("information") Information updatedInformation) {
+        Information existingInformation = informationService.getInformationRepository().findById((int) updatedInformation.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid information id: " + updatedInformation.getId()));
+
+        existingInformation.setCategory(updatedInformation.getCategory());
+        existingInformation.setDescription(updatedInformation.getDescription());
+
+        LocalDateTime dateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+        String formattedDateTime = dateTime.format(formatter);
+        existingInformation.setCreationTime(formattedDateTime);
+
+        informationService.getInformationRepository().save(existingInformation);
+        return "redirect:/informations/";
+    }
 }

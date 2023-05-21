@@ -1,12 +1,10 @@
 package com.example.projekt.data;
 
-import com.fasterxml.jackson.annotation.JsonTypeId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -23,13 +21,13 @@ public class Information {
     @GeneratedValue
     private long id;
     private String name;
-    private String descirption;
+    private String description;
     private String category;
     private String creationTime;
 
-    public Information(String name, String descirption, String category) {
+    public Information(String name, String description, String category) {
         this.name = name;
-        this.descirption = descirption;
+        this.description = description;
         this.category = category;
         LocalDateTime dateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
@@ -37,9 +35,9 @@ public class Information {
         this.creationTime = formattedDateTime;
     }
 
-    public Information(String name, String descirption, String category, String creationTime) {
+    public Information(String name, String description, String category, String creationTime) {
         this.name = name;
-        this.descirption = descirption;
+        this.description = description;
         this.category = category;
         this.creationTime = creationTime;
     }

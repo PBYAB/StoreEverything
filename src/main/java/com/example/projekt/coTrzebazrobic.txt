@@ -1,8 +1,6 @@
 dodanie/edycja/usunięcie przez siebie zebranych informacji - 5p.
 
-Wyświetlanie “swoich” informacji: sortowanie w obu kierunkach (data,kategoria, alfabetycznie) - 2p.
-
 Zapamiętanie kierunków i kryteriów sortowania - 1p.
 
-Filtrowanie według daty (od aktualnej) i kategorii (od najbardziej popularnej) -2p.
+
 

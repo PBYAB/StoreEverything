@@ -20,4 +20,13 @@ public class CategoryService {
         categoryRepository.save(new Category("Zarządzanie IT"));
         categoryRepository.save(new Category("Nauka"));
     }
+
+    public Category getOrCreateCategory(String categoryName) {
+        Category category = categoryRepository.getCategoryByName(categoryName);
+        if (category == null) {
+            category = new Category(categoryName);
+            categoryRepository.save(category);
+        }
+        return category;
+    }
 }

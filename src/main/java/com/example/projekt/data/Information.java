@@ -36,4 +36,11 @@ public class Information {
         String formattedDateTime = dateTime.format(formatter);
         this.creationTime = formattedDateTime;
     }
+
+    public Information(String name, String descirption, String category, String creationTime) {
+        this.name = name;
+        this.descirption = descirption;
+        this.category = category;
+        this.creationTime = creationTime;
+    }
 }

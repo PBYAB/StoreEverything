@@ -2,36 +2,35 @@ package com.example.projekt.controllers;
 
 import com.example.projekt.data.Category;
 import com.example.projekt.data.Information;
-import com.example.projekt.services.CategoryService;
-import com.example.projekt.services.InformationService;
+import com.example.projekt.services.CategoryServiceWithJpa;
+import com.example.projekt.services.InformationServiceWithJpa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Controller
 @RequestMapping(value = "/informations")
 public class InformationController {
-    @Autowired
-    InformationService informationService;
 
     @Autowired
-    CategoryService categoryService;
+    InformationServiceWithJpa informationServiceWithJpa;
+
+    @Autowired
+    CategoryServiceWithJpa categoryServiceWithJpa;
 
     @GetMapping("/")
     public String getInformations(@RequestParam(required = false) String categoryName, Model model) {
         List<Information> informations;
         if (categoryName != null && !categoryName.isEmpty()) {
-            informations = informationService.getInformationsByCategoryName(categoryName);
+            informations = informationServiceWithJpa.getInformationRepositoryInterface().getInformationByCategory(categoryName);
         } else {
-            informations = informationService.getAllInformations();
+            informations = informationServiceWithJpa.getInformationRepositoryInterface().findAll();
         }
         model.addAttribute("informations", informations);
-        model.addAttribute("categories", informationService.getCategoryRepository().getCategories());
+        model.addAttribute("categories", categoryServiceWithJpa.getCategoryRepositoryInterface().findAll());
         return "informations";
     }
 
@@ -42,10 +41,7 @@ public class InformationController {
                                     @RequestParam String categoryName,
                                     @RequestParam String descriptionNote,
                                     Model model) {
-        LocalDateTime dateTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-        String formattedDateTime = dateTime.format(formatter);
-        List<Category> categories = categoryService.getCategoryRepository().getCategories();
+        List<Category> categories = categoryServiceWithJpa.getCategoryRepositoryInterface().findAll();
         Category category = categories.stream()
                 .filter(c -> c.getName().equals(categoryName))
                 .findFirst()
@@ -53,12 +49,12 @@ public class InformationController {
 
         if (category == null) {
             category = new Category(categoryName);
-            categories.add(category);
+            categoryServiceWithJpa.getCategoryRepositoryInterface().save(category);
         }
-        Information information = new Information(Integer.toString(informationService.getInformationRepository().getInformations().size() + 1), noteName, categoryName, category, formattedDateTime);
-        informationService.getInformationRepository().getInformations().add(information);
+        Information information = new Information(noteName, descriptionNote,categoryName);
+        informationServiceWithJpa.getInformationRepositoryInterface().save(information);
         model.addAttribute("newInformation", information);
-        model.addAttribute("informations", informationService.getAllInformations());
+        model.addAttribute("informations", informationServiceWithJpa.getInformationRepositoryInterface().findAll());
 
         return "redirect:/informations/";
     }
@@ -67,13 +63,12 @@ public class InformationController {
     @GetMapping("/category")
     public String getInformationsFromCategory(@RequestParam("categoryName") String category, Model model){
         if(category.isEmpty()){
-            model.addAttribute("informations",informationService.getAllInformations());
-            model.addAttribute("categories",informationService.getCategoryRepository().getCategories());
+            model.addAttribute("informations",informationServiceWithJpa.getInformationRepositoryInterface().findAll());
         }
-        else
-        model.addAttribute("informations",informationService.getInformationsByCategoryName(category));
-        model.addAttribute("categories",informationService.getCategoryRepository().getCategories());
+        else {
+            model.addAttribute("informations",informationServiceWithJpa.getInformationRepositoryInterface().getInformationByCategory(category));
+             }
+        model.addAttribute("categories", categoryServiceWithJpa.getCategoryRepositoryInterface().findAll());
         return "informations";
         }
-
 }

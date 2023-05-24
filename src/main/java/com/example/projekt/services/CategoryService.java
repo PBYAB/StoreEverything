@@ -14,11 +14,11 @@ public class CategoryService {
 
     public CategoryService(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
-        categoryRepository.save(new Category("Zarządzanie projektami"));
-        categoryRepository.save(new Category("Marketing"));
-        categoryRepository.save(new Category("Finanse"));
-        categoryRepository.save(new Category("Zarządzanie IT"));
-        categoryRepository.save(new Category("Nauka"));
+       /* categoryRepository.save(new Category("zarządzanie"));
+        categoryRepository.save(new Category("marketing"));
+        categoryRepository.save(new Category("finanse"));
+        categoryRepository.save(new Category("zarządzanie it"));
+        categoryRepository.save(new Category("nauka"));*/
     }
 
     public Category getOrCreateCategory(String categoryName) {

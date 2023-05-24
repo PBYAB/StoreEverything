@@ -58,6 +58,7 @@ public class InformationController {
         return "information";
     }
 
+
     @PostMapping("/save")
     public String updateInformation(@Valid @ModelAttribute("information") Information updatedInformation, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {

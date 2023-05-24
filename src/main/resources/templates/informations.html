@@ -54,7 +54,8 @@
                 <br>
                 <span th:text="|Description: ${information.description} |"></span>
                 <br>
-                <a th:href="@{/informations/edit/{id}(id=${information.id})}" class="btn btn-primary">Edit</a>
+                <a th:href="@{edit/{id}(id=${information.id})}" class="btn btn-primary">Edit</a>
+                <a th:href="@{delete/{id}(id=${information.id})}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this information?')">Delete</a>
             </p>
         </li>
     </ol>

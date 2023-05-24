@@ -74,6 +74,11 @@ public class InformationController {
         informationService.getInformationRepository().save(existingInformation);
         return "redirect:/informations/";
     }
+    @GetMapping("/delete/{id}")
+    public String deleteInformation(@PathVariable("id") int id) {
+        informationService.getInformationRepository().deleteById(id);
+        return "redirect:/informations/";
+    }
     public static String getDate(){
         LocalDateTime dateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
@@ -81,4 +86,5 @@ public class InformationController {
 
         return formattedDateTime;
     }
+
 }

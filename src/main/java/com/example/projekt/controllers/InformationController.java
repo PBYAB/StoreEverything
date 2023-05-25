@@ -31,13 +31,19 @@ public class InformationController {
     }
 
     @PostMapping("/add-category")
-    public String addCategoryPost(@Valid @ModelAttribute("category") Category category, BindingResult bindingResult) {
+    public String addCategoryPost(@Valid @ModelAttribute("category") Category category, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
+            return "add-category";
+        }
+        Category existingCategory = categoryService.getCategoryRepository().findByName(category.getName());
+        if (existingCategory != null) {
+            model.addAttribute("categoryExistsError", "Category already exists");
             return "add-category";
         }
         categoryService.getCategoryRepository().save(category);
         return "redirect:/informations/";
     }
+
 
     @GetMapping("/edit/{id}")
     public String editInformation(@PathVariable("id") int id, Model model) {

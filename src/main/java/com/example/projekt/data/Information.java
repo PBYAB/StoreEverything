@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 @Entity
 @Getter
 @Setter
-@Table(name = "InfoTBL")
+@Table(name = "Informations")
 public class Information {
 
     @Id

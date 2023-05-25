@@ -20,6 +20,7 @@ public class InformationService {
 
     public InformationService(InformationRepository informationRepository) {
         this.informationRepository = informationRepository;
+
     }
 
     public List<Information> getAllInformationsSortedByCategoryOccurrences(Sort sort) {

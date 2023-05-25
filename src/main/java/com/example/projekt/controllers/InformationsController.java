@@ -36,6 +36,7 @@ public class InformationsController {
                                      @RequestParam(required = false) String sortBy,
                                      @RequestParam(required = false) String sortDirection,
                                      @RequestParam(required = false) String filterByDate,
+                                     @RequestParam(required = false, defaultValue = "false") boolean resetFilters,
                                      HttpServletRequest request,
                                      HttpServletResponse response,
                                      Model model) {
@@ -44,20 +45,53 @@ public class InformationsController {
         Sort.Direction direction = Sort.Direction.DESC;
         String sortField = "creationTime";
 
+        if (resetFilters) {
+            model.addAttribute("selectedCategory", null);
+            model.addAttribute("selectedSortBy", null);
+            model.addAttribute("selectedSortDirection", null);
+            model.addAttribute("selectedFilterByDate", null);
+
+
+            removeCookie(response, "categoryName");
+            removeCookie(response, "sortBy");
+            removeCookie(response, "sortDirection");
+            removeCookie(response, "filterByDate");
+            return "redirect:/informations/";
+        }
+
+        boolean isFilteringOrSorting = categoryName != null || sortBy != null || sortDirection != null || filterByDate != null;
+
+        if (isFilteringOrSorting) {
+            model.addAttribute("selectedCategory", categoryName);
+            model.addAttribute("selectedSortBy", sortBy);
+            model.addAttribute("selectedSortDirection", sortDirection);
+            model.addAttribute("selectedFilterByDate", filterByDate);
+
+            // Zapisz wartości filtracji i sortowania w ciasteczkach
+            addCookie(response, "categoryName", categoryName);
+            addCookie(response, "sortBy", sortBy);
+            addCookie(response, "sortDirection", sortDirection);
+            addCookie(response, "filterByDate", filterByDate);
+        }
+        // W przeciwnym razie odczytaj wartości z atrybutów modelu
+        else {
+            categoryName = getCookieValue(request, "categoryName");
+            sortBy = getCookieValue(request, "sortBy");
+            sortDirection = getCookieValue(request, "sortDirection");
+            filterByDate = getCookieValue(request, "filterByDate");
+
+            model.addAttribute("selectedCategory", categoryName);
+            model.addAttribute("selectedSortBy", sortBy);
+            model.addAttribute("selectedSortDirection", sortDirection);
+            model.addAttribute("selectedFilterByDate", filterByDate);
+        }
+
+        // Ustaw kierunek sortowania
         if (sortDirection != null && sortDirection.equalsIgnoreCase("asc")) {
             direction = Sort.Direction.ASC;
         }
-        // Sprawdź, czy w ciasteczku są zapisane wartości sortowania i filtrowania
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if (cookie.getName().equals("sortBy")) {
-                    sortBy = cookie.getValue();
-                } else if (cookie.getName().equals("sortDirection")) {
-                    sortDirection = cookie.getValue();
-                }
-            }
-        }
 
+        // Ustaw pole sortowania
         if (sortBy != null && !sortBy.isEmpty()) {
             if (sortBy.equalsIgnoreCase("name")) {
                 sortField = "name";
@@ -88,13 +122,9 @@ public class InformationsController {
         model.addAttribute("informations", informations);
         model.addAttribute("categories", categoryService.getCategoryRepository().findAll());
 
-        // Zapisz wartości sortowania i filtrowania do ciasteczek
-        response.addCookie(new Cookie("sortBy", sortBy));
-        response.addCookie(new Cookie("sortDirection", sortDirection));
-        response.addCookie(new Cookie("filterByDate", filterByDate));
-
         return "informations";
     }
+
 
     @PostMapping("/")
     public String getInformationsPost(@Valid @ModelAttribute Information information, BindingResult bindingResult, Model model) {
@@ -104,8 +134,16 @@ public class InformationsController {
             return "add-information";
         }
         information.setCreationTime(getDate());
-        informationService.getInformationRepository().save(information);
-        categoryService.getCategoryRepository().save(new Category(information.getCategory()));
+        Information savedInformation = informationService.getInformationRepository().save(information);
+
+        Category existingCategory = categoryService.getCategoryRepository().findByName(information.getCategory());
+        if (existingCategory == null) {
+            categoryService.getCategoryRepository().save(new Category(information.getCategory()));
+        } else {
+            savedInformation.setCategory(existingCategory.getName());
+            informationService.getInformationRepository().save(savedInformation);
+        }
+
         return "redirect:/informations/";
     }
 
@@ -143,5 +181,29 @@ public class InformationsController {
         String formattedDateTime = dateTime.format(formatter);
 
         return formattedDateTime;
+    }
+
+    private void addCookie(HttpServletResponse response, String name, String value) {
+        Cookie cookie = new Cookie(name, value);
+        cookie.setMaxAge(30 * 24 * 60 * 60);
+        response.addCookie(cookie);
+    }
+
+    private void removeCookie(HttpServletResponse response, String name) {
+        Cookie cookie = new Cookie(name, null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+    }
+
+    private String getCookieValue(HttpServletRequest request, String name) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (name.equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
     }
 }

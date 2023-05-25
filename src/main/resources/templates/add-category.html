@@ -11,12 +11,16 @@
 <div class="container">
     <h1>Add Category</h1>
     <hr>
-    <form method="post" th:action="@{/informations/add-category}" th:object="${category}">
+    <form th:action="@{/informations/add-category}" method="post" th:object="${category}">
         <div class="form-group">
-            <label for="categoryNameInput">Category Name:</label>
-            <input type="text" id="categoryNameInput" name="categoryName" class="form-control" th:field="*{name}">
-            <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></div>
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" th:field="*{name}">
         </div>
+
+        <div th:if="${categoryExistsError}" class="alert alert-danger" role="alert">
+            <span th:text="${categoryExistsError}"></span>
+        </div>
+
         <button type="submit" class="btn btn-primary">Add Category</button>
     </form>
 </div>

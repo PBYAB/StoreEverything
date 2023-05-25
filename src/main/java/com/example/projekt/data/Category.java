@@ -14,7 +14,7 @@ import lombok.*;
 @Entity
 @Getter
 @Setter
-@Table(name = "CatTBL")
+@Table(name = "Categories")
 public class Category {
     @NonNull
     @Size(min = 3, max = 20, message = "Kategoria powinna mieć od {min} do {max} znaków.")

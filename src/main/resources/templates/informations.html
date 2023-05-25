@@ -15,33 +15,37 @@
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="filterByDateInput">Filter by date:</label>
-                <input type="date" id="filterByDateInput" name="filterByDate" class="form-control">
+                <input type="date" id="filterByDateInput" name="filterByDate" class="form-control" th:value="${selectedFilterByDate}">
             </div>
+
             <div class="form-group col-md-4">
                 <label for="categorySelect">Filter by category:</label>
                 <select id="categorySelect" name="categoryName" class="form-control">
                     <option value="">All</option>
-                    <option th:each="category : ${categories}" th:value="${category.name}" th:text="${category.name}"></option>
+                    <option th:each="category : ${categories}" th:value="${category.name}" th:selected="${category.name == selectedCategory}" th:text="${category.name}"></option>
                 </select>
             </div>
+
             <div class="form-group col-md-4">
                 <label for="sortBySelect">Sort by:</label>
                 <select id="sortBySelect" name="sortBy" class="form-control">
-                    <option value="name">Name</option>
-                    <option value="creationTime">Creation Time</option>
-                    <option value="category">Category</option>
-                    <option value="categoryOccurrences">Category Occurrences</option>
+                    <option value="name" th:selected="${selectedSortBy == 'name'}">Name</option>
+                    <option value="creationTime" th:selected="${selectedSortBy == 'creationTime'}">Creation Time</option>
+                    <option value="category" th:selected="${selectedSortBy == 'category'}">Category</option>
+                    <option value="categoryOccurrences" th:selected="${selectedSortBy == 'categoryOccurrences'}">Category Occurrences</option>
                 </select>
             </div>
         </div>
         <div class="form-group">
             <label for="sortDirectionSelect">Sort direction:</label>
             <select id="sortDirectionSelect" name="sortDirection" class="form-control">
-                <option value="ASC">Ascending</option>
-                <option value="DESC">Descending</option>
+                <option value="ASC" th:selected="${selectedSortDirection == 'ASC'}">Ascending</option>
+                <option value="DESC" th:selected="${selectedSortDirection == 'DESC'}">Descending</option>
             </select>
         </div>
+
         <button type="submit" class="btn btn-primary">Filter and Sort</button>
+        <button type="submit" name="resetFilters" value="true" class="btn btn-danger">Reset Filters</button>
     </form>
     <hr>
     <ol class="list-group">

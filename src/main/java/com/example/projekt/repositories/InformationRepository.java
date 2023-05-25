@@ -10,7 +10,5 @@ import java.util.List;
 public interface InformationRepository extends JpaRepository<Information,Integer> {
     List<Information> getInformationByCategory(String category, Sort sort);
 
-    Information getInformationById(Long id);
-
     Void deleteById(int Id);
 }

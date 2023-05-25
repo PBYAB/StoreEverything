@@ -20,15 +20,7 @@ public class InformationService {
 
     public InformationService(InformationRepository informationRepository) {
         this.informationRepository = informationRepository;
-       /* informationRepository.save(new Information("Spotkanie zespołu", "Planowane spotkanie zespołu projektowego", "zarządzanie projektami","22.05.2023 23:12:04"));
-        informationRepository.save(new Information("Prezentacja sprzedażowa", "Przygotowanie prezentacji dotyczącej nowego produktu", "prezentacja","20.05.2023 23:12:04"));
-        informationRepository.save(new Information("Raport finansowy", "Przygotowanie raportu finansowego za pierwszy kwartał", "finanse"));
-        informationRepository.save(new Information("Raport finansowy", "Przygotowanie raportu finansowego za pierwszy kwartał", "finanse"));
-        informationRepository.save(new Information("Szkolenie z obsługi systemu", "Szkolenie dla pracowników dotyczące nowego systemu informatycznego", "zarządzanie it","19.05.2023 23:12:04"));
-        informationRepository.save(new Information("Projekt badawczy", "Realizacja projektu badawczego w dziedzinie biologii", "nauka","20.05.2023 23:12:04"));
-        informationRepository.save(new Information("Projekt badawczy", "Realizacja projektu badawczego w dziedzinie biologii", "nauka"));
-        informationRepository.save(new Information("Projekt badawczy", "Realizacja projektu badawczego w dziedzinie biologii", "nauka"));
-    */}
+    }
 
     public List<Information> getAllInformationsSortedByCategoryOccurrences(Sort sort) {
         List<Information> informations = informationRepository.findAll();

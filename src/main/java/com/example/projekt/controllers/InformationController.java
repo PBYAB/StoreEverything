@@ -13,51 +13,55 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @Controller
-@RequestMapping(value = "/informations")
+@RequestMapping("/informations")
 public class InformationController {
 
     @Autowired
-    InformationService informationService;
+    private InformationService informationService;
 
     @Autowired
-    CategoryService categoryService;
+    private CategoryService categoryService;
 
+    @GetMapping("/add-category")
+    public String addCategoryGet(Model model) {
+        model.addAttribute("category", new Category());
+        return "add-category";
+    }
 
-    @PostMapping("/")
-    public String createInformation(@RequestParam String noteName,
-                                    @RequestParam String categoryName,
-                                    @RequestParam String descriptionNote,
-                                    Model model) {
-        List<Category> categories = categoryService.getCategoryRepository().findAll();
-        Category category = categories.stream()
-                .filter(c -> c.getName().equals(categoryName))
-                .findFirst()
-                .orElse(null);
-
-        if (category == null) {
-            category = new Category(categoryName);
-            categoryService.getCategoryRepository().save(category);
+    @PostMapping("/add-category")
+    public String addCategoryPost(@Valid @ModelAttribute("category") Category category, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "add-category";
         }
-        Information information = new Information(noteName, descriptionNote,categoryName);
-        informationService.getInformationRepository().save(information);
-        model.addAttribute("newInformation", information);
-        model.addAttribute("informations", informationService.getInformationRepository().findAll());
-
+        categoryService.getCategoryRepository().save(category);
         return "redirect:/informations/";
     }
 
-
     @GetMapping("/edit/{id}")
     public String editInformation(@PathVariable("id") int id, Model model) {
-        Information information = informationService.getInformationRepository().findById(Math.toIntExact(id))
+        Information information = informationService.getInformationRepository()
+                .findById(Math.toIntExact(id))
                 .orElseThrow(() -> new IllegalArgumentException("Invalid information id: " + id));
         model.addAttribute("information", information);
         return "information";
     }
 
+    @GetMapping("/add-information")
+    public String addInformationGet(Model model) {
+        model.addAttribute("information", new Information());
+        return "add-information";
+    }
+
+    @PostMapping("/add-information")
+    public String addInformationPost(@Valid @ModelAttribute Information information, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "add-information";
+        }
+        informationService.getInformationRepository().save(information);
+        return "redirect:/informations/";
+    }
 
     @PostMapping("/save")
     public String updateInformation(@Valid @ModelAttribute("information") Information updatedInformation, BindingResult bindingResult) {
@@ -69,22 +73,21 @@ public class InformationController {
 
         existingInformation.setCategory(updatedInformation.getCategory());
         existingInformation.setDescription(updatedInformation.getDescription());
-
         existingInformation.setCreationTime(getDate());
+
         informationService.getInformationRepository().save(existingInformation);
         return "redirect:/informations/";
     }
+
     @GetMapping("/delete/{id}")
     public String deleteInformation(@PathVariable("id") int id) {
         informationService.getInformationRepository().deleteById(id);
         return "redirect:/informations/";
     }
-    public static String getDate(){
+
+    public static String getDate() {
         LocalDateTime dateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-        String formattedDateTime = dateTime.format(formatter);
-
-        return formattedDateTime;
+        return dateTime.format(formatter);
     }
-
 }

@@ -1,11 +1,7 @@
 package com.example.projekt.data;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -21,36 +17,38 @@ import java.time.format.DateTimeFormatter;
 public class Information {
 
     @Id
-    @NonNull
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private int id;
 
     @NonNull
     @Size(min = 3, max = 20, message = "Nazwa powinna mieć od {min} do {max} znaków.")
+    @Column(name = "name",nullable = false,length = 20)
     private String name;
 
     @NonNull
+    @Column(name = "description",nullable = false,length = 500)
     @Size(min = 5, max = 500, message = "Opis powinien mieć od {min} do {max} znaków.")
     private String description;
 
     @NonNull
-    @Size(min = 3, max = 20, message = "Kategoria powinna mieć od {min} do {max} znaków.")
-    @Pattern(regexp = "^[a-z]+$", message = "Nazwa kategorii może składać się tylko z małych liter.")
-    private String category;
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @JoinColumn(name = "category",nullable = false)
+    private Category category;
+
 
     private String creationTime;
 
-    public Information(String name, String description, String category) {
+    public Information(String name, String description, Category category) {
         this.name = name;
         this.description = description;
         this.category = category;
         LocalDateTime dateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-        String formattedDateTime = dateTime.format(formatter);
-        this.creationTime = formattedDateTime;
+        this.creationTime = dateTime.format(formatter);
     }
 
-    public Information(String name, String description, String category, String creationTime) {
+    public Information(String name, String description, Category category, String creationTime) {
         this.name = name;
         this.description = description;
         this.category = category;

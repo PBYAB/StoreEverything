@@ -1,10 +1,6 @@
 package com.example.projekt.data;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -19,6 +15,7 @@ public class Category {
     @NonNull
     @Size(min = 3, max = 20, message = "Kategoria powinna mieć od {min} do {max} znaków.")
     @Pattern(regexp = "^[a-z]+$", message = "Nazwa kategorii może składać się tylko z małych liter.")
+    @Column(name= "name", nullable = false, length = 20)
     private String name;
 
     public Category(String name) {
@@ -26,7 +23,8 @@ public class Category {
     }
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name= "id", nullable = false)
     private int id;
 
     public Category() {

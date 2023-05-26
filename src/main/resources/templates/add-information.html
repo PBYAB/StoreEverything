@@ -9,23 +9,23 @@
 </head>
 <body>
 <div class="container">
-    <h1>Edit Information</h1>
+    <h1>Add Information</h1>
     <hr>
-    <form method="post" th:action="@{/informations/}" th:object="${information}">
+    <form method="post" th:action="@{/informations/add-information}" th:object="${information}">
         <div class="form-group">
             <label for="nameInput">Name:</label>
             <input type="text" id="nameInput" name="name" class="form-control" th:field="*{name}">
-            <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></div>
+            <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="alert alert-danger"></div>
         </div>
-        <div class="form-group">
-            <label for="categoryInput">Category:</label>
-            <input type="text" id="categoryInput" name="category" class="form-control" th:value="${information.category}">
-            <div th:if="${#fields.hasErrors('category')}" th:errors="*{category}" class="text-danger"></div>
-        </div>
+        <select class="form-control" th:field="*{category}">
+            <option value="">Pick a category</option>
+            <option th:each="ctg : ${categories}" th:value="${ctg.id}" th:text="${ctg.name}">category</option>
+        </select>
+        <div th:if="${#fields.hasErrors('category')}" class="alert alert-danger">Proszę wybrać kategorię.</div>
         <div class="form-group">
             <label for="descriptionInput">Description:</label>
             <textarea id="descriptionInput" name="description" class="form-control" th:text="${information.description}"></textarea>
-            <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger"></div>
+            <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="alert alert-danger"></div>
         </div>
         <button type="submit" class="btn btn-primary">Save</button>
     </form>

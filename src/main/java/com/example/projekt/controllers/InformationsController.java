@@ -106,7 +106,7 @@ public class InformationsController {
 
         if (categoryName != null && !categoryName.isEmpty()) {
             informations = informationService.getInformationRepository()
-                    .getInformationByCategory(categoryName, Sort.by(direction, sortField));
+                    .findAllByCategory_Name(categoryName, Sort.by(direction, sortField));
         } else {
             if (sortField.equals("categoryOccurrences")) {
                 informations = informationService.getAllInformationsSortedByCategoryOccurrences(Sort.by(direction, sortField));
@@ -136,13 +136,14 @@ public class InformationsController {
         information.setCreationTime(getDate());
         Information savedInformation = informationService.getInformationRepository().save(information);
 
-        Category existingCategory = categoryService.getCategoryRepository().findByName(information.getCategory());
+        Category existingCategory = categoryService.getCategoryRepository().findByName(information.getCategory().getName());
         if (existingCategory == null) {
-            categoryService.getCategoryRepository().save(new Category(information.getCategory()));
+            categoryService.getCategoryRepository().save(information.getCategory());
         } else {
-            savedInformation.setCategory(existingCategory.getName());
+            savedInformation.setCategory(existingCategory);
             informationService.getInformationRepository().save(savedInformation);
         }
+
 
         return "redirect:/informations/";
     }
@@ -165,13 +166,13 @@ public class InformationsController {
 
     @GetMapping("/category")
     public String getInformationsFromCategory(@RequestParam("categoryName") String category, Model model){
-        if(category.isEmpty()){
+        Category categoryObj = categoryService.getCategoryRepository().findByName(category);
+        if (categoryObj != null) {
+            model.addAttribute("informations", informationService.getInformationRepository().findAllByCategory_Name(categoryObj.getName(), Sort.by(Sort.Direction.ASC, "creationTime")));
+        } else {
             model.addAttribute("informations", informationService.getInformationRepository().findAll());
         }
-        else {
-            model.addAttribute("informations", informationService.getInformationRepository().getInformationByCategory(category, Sort.by(Sort.Direction.ASC, "creationTime")));
-        }
-        model.addAttribute("categories", categoryService.getCategoryRepository().findAll());
+
         return "informations";
     }
 

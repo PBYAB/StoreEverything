@@ -15,6 +15,9 @@
         <div class="form-group">
             <label for="name">Name</label>
             <input type="text" class="form-control" id="name" th:field="*{name}">
+            <div th:if="${#fields.hasErrors('name')}" class="alert alert-danger" role="alert">
+                <span th:errors="*{name}"></span>
+            </div>
         </div>
 
         <div th:if="${categoryExistsError}" class="alert alert-danger" role="alert">

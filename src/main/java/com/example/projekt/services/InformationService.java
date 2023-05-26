@@ -25,7 +25,7 @@ public class InformationService {
 
     public List<Information> getAllInformationsSortedByCategoryOccurrences(Sort sort) {
         List<Information> informations = informationRepository.findAll();
-        informations.sort(Comparator.comparingInt(o -> getCategoryOccurrences(o.getCategory(), informations)));
+        informations.sort(Comparator.comparingInt(o -> getCategoryOccurrences(o.getCategory().getName(), informations)));
         if (sort.getOrderFor("categoryOccurrences").isDescending()) {
             Collections.reverse(informations);
         }
@@ -36,7 +36,7 @@ public class InformationService {
     private int getCategoryOccurrences(String category, List<Information> informations) {
         int count = 0;
         for (Information information : informations) {
-            if (information.getCategory().equals(category)) {
+            if (information.getCategory().getName().equals(category)) {
                 count++;
             }
         }return count;

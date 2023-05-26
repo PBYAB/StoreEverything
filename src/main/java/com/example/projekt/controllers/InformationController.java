@@ -46,44 +46,58 @@ public class InformationController {
 
 
     @GetMapping("/edit/{id}")
-    public String editInformation(@PathVariable("id") int id, Model model) {
+    public String editInformationGet(@PathVariable("id") int id, Model model) {
         Information information = informationService.getInformationRepository()
-                .findById(Math.toIntExact(id))
+                .findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid information id: " + id));
         model.addAttribute("information", information);
-        return "information";
+        model.addAttribute("categories", categoryService.getCategoryRepository().findAll());
+        return "edit-information";
     }
 
-    @GetMapping("/add-information")
-    public String addInformationGet(Model model) {
-        model.addAttribute("information", new Information());
-        return "add-information";
-    }
-
-    @PostMapping("/add-information")
-    public String addInformationPost(@Valid @ModelAttribute Information information, BindingResult bindingResult) {
+    @PostMapping("/edit/{id}")
+    public String editInformationPost(@Valid @ModelAttribute("information") Information updatedInformation, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            return "add-information";
-        }
-        informationService.getInformationRepository().save(information);
-        return "redirect:/informations/";
-    }
-
-    @PostMapping("/save")
-    public String updateInformation(@Valid @ModelAttribute("information") Information updatedInformation, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "information";
+            model.addAttribute("categories", categoryService.getCategoryRepository().findAll());
+            return "edit-information";
         }
         Information existingInformation = informationService.getInformationRepository().findById(updatedInformation.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid information id: " + updatedInformation.getId()));
 
-        existingInformation.setCategory(updatedInformation.getCategory());
+        existingInformation.setName(updatedInformation.getName());
+        existingInformation.setCategory(categoryService.getCategoryRepository().findById(updatedInformation.getCategory().getId()).orElse(null));
         existingInformation.setDescription(updatedInformation.getDescription());
         existingInformation.setCreationTime(getDate());
 
         informationService.getInformationRepository().save(existingInformation);
         return "redirect:/informations/";
     }
+
+
+    @GetMapping("/add-information")
+    public String addInformationGet(Model model) {
+        model.addAttribute("information", new Information());
+        model.addAttribute("categories", categoryService.getCategoryRepository().findAll());
+        return "add-information";
+    }
+
+
+    @PostMapping("/add-information")
+    public String addInformationPost(@Valid @ModelAttribute Information information, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("categories", categoryService.getCategoryRepository().findAll());
+            return "add-information";
+        }
+        if (information.getCategory() == null) {
+            model.addAttribute("categories", categoryService.getCategoryRepository().findAll());
+            return "add-information";
+        }
+        information.setCategory(categoryService.getCategoryRepository().findById(information.getCategory().getId()).orElse(null));
+        information.setCreationTime(getDate());
+        informationService.getInformationRepository().save(information);
+        return "redirect:/informations/";
+    }
+
 
     @GetMapping("/delete/{id}")
     public String deleteInformation(@PathVariable("id") int id) {

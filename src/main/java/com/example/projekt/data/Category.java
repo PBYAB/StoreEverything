@@ -8,9 +8,7 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @Entity
-@Getter
-@Setter
-@Table(name = "Categories")
+@Table(name = "category")
 public class Category {
     @NonNull
     @Size(min = 3, max = 20, message = "Kategoria powinna mieć od {min} do {max} znaków.")

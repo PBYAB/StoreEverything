@@ -6,6 +6,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
           crossorigin="anonymous">
+    <style>
+        .card-text {
+            word-wrap: break-word;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -14,10 +19,13 @@
     <form method="get" action="#" th:action="@{/informations/}">
         <div class="form-row">
             <div class="form-group col-md-4">
-                <label for="filterByDateInput">Filter by date:</label>
-                <input type="date" id="filterByDateInput" name="filterByDate" class="form-control" th:value="${selectedFilterByDate}">
+                <label for="filterByStartDate">Filter by start date:</label>
+                <input type="date" id="filterByStartDate" name="filterByStartDate" class="form-control" th:value="${selectedFilterByStartDate}">
             </div>
-
+            <div class="form-group col-md-4">
+                <label for="filterByEndDate">Filter by end date:</label>
+                <input type="date" id="filterByEndDate" name="filterByEndDate" class="form-control" th:value="${selectedFilterByEndDate}">
+            </div>
             <div class="form-group col-md-4">
                 <label for="categorySelect">Filter by category:</label>
                 <select id="categorySelect" name="categoryName" class="form-control">
@@ -25,8 +33,10 @@
                     <option th:each="category : ${categories}" th:value="${category.name}" th:selected="${category.name == selectedCategory}" th:text="${category.name}"></option>
                 </select>
             </div>
+        </div>
 
-            <div class="form-group col-md-4">
+        <div class="form-row">
+            <div class="form-group col-md-6">
                 <label for="sortBySelect">Sort by:</label>
                 <select id="sortBySelect" name="sortBy" class="form-control">
                     <option value="name" th:selected="${selectedSortBy == 'name'}">Name</option>
@@ -35,17 +45,22 @@
                     <option value="categoryOccurrences" th:selected="${selectedSortBy == 'categoryOccurrences'}">Category Occurrences</option>
                 </select>
             </div>
-        </div>
-        <div class="form-group">
-            <label for="sortDirectionSelect">Sort direction:</label>
-            <select id="sortDirectionSelect" name="sortDirection" class="form-control">
-                <option value="ASC" th:selected="${selectedSortDirection == 'ASC'}">Ascending</option>
-                <option value="DESC" th:selected="${selectedSortDirection == 'DESC'}">Descending</option>
-            </select>
+
+            <div class="form-group col-md-6">
+                <label for="sortDirectionSelect">Sort direction:</label>
+                <select id="sortDirectionSelect" name="sortDirection" class="form-control">
+                    <option value="ASC" th:selected="${selectedSortDirection == 'ASC'}">Ascending</option>
+                    <option value="DESC" th:selected="${selectedSortDirection == 'DESC'}">Descending</option>
+                </select>
+            </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">Filter and Sort</button>
-        <button type="submit" name="resetFilters" value="true" class="btn btn-danger">Reset Filters</button>
+        <button type="submit" class="btn btn-primary" style="color: #ffffff; background-color: #0a0aff;">
+            Filter and Sort
+        </button>
+        <button type="submit" name="resetFilters" value="true" class="btn btn-danger">
+            Reset Filters
+        </button>
     </form>
     <hr>
     <ol class="list-group">
@@ -58,15 +73,33 @@
                 <br>
                 <span th:text="|Description: ${information.description} |"></span>
                 <br>
-                <a th:href="@{edit/{id}(id=${information.id})}" class="btn btn-primary">Edit</a>
-                <a th:href="@{delete/{id}(id=${information.id})}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this information?')">Delete</a>
+                <span th:if="${information.link != null}">
+                    Link:
+                <a th:href="${information.link}" target="_blank" th:text="${information.link}"></a>
+                <br>
+                </span>
+                <a th:href="@{edit/{id}(id=${information.id})}" class="btn btn-primary" style="color: #ffffff; background-color: #0a0aff;">
+                    Edit
+                </a>
+                <a th:href="@{delete/{id}(id=${information.id})}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this information?')">
+                    Delete
+                </a>
             </p>
         </li>
     </ol>
 
 
-    <a th:href="@{add-information}" class="btn btn-success">Add Information</a>
-    <a th:href="@{add-category}" class="btn btn-success">Add Category</a>
+    <a th:href="@{add-information}" class="btn btn-success" style="color: #ffffff; background-color: #146126;">
+        Add Information
+    </a>
+    <a th:href="@{add-category}" class="btn btn-success" style="color: #ffffff; background-color: #146126;">
+        Add Category
+    </a>
 </div>
+<footer>
+    <div class="container">
+        <p>© 2023 StoreEverything. All rights reserved.</p>
+    </div>
+</footer>
 </body>
 </html>

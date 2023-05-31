@@ -14,7 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -35,7 +34,8 @@ public class InformationsController {
     public String getInformationsGet(@RequestParam(required = false) String categoryName,
                                      @RequestParam(required = false) String sortBy,
                                      @RequestParam(required = false) String sortDirection,
-                                     @RequestParam(required = false) String filterByDate,
+                                     @RequestParam(required = false) String filterByStartDate,
+                                     @RequestParam(required = false) String filterByEndDate,
                                      @RequestParam(required = false, defaultValue = "false") boolean resetFilters,
                                      HttpServletRequest request,
                                      HttpServletResponse response,
@@ -49,49 +49,48 @@ public class InformationsController {
             model.addAttribute("selectedCategory", null);
             model.addAttribute("selectedSortBy", null);
             model.addAttribute("selectedSortDirection", null);
-            model.addAttribute("selectedFilterByDate", null);
-
+            model.addAttribute("selectedFilterByStartDate", null);
+            model.addAttribute("selectedFilterByEndDate", null);
 
             removeCookie(response, "categoryName");
             removeCookie(response, "sortBy");
             removeCookie(response, "sortDirection");
-            removeCookie(response, "filterByDate");
+            removeCookie(response, "filterByStartDate");
+            removeCookie(response, "filterByEndDate");
             return "redirect:/informations/";
         }
 
-        boolean isFilteringOrSorting = categoryName != null || sortBy != null || sortDirection != null || filterByDate != null;
-
+        boolean isFilteringOrSorting = categoryName != null || sortBy != null || sortDirection != null || filterByStartDate != null || filterByEndDate != null;
         if (isFilteringOrSorting) {
             model.addAttribute("selectedCategory", categoryName);
             model.addAttribute("selectedSortBy", sortBy);
             model.addAttribute("selectedSortDirection", sortDirection);
-            model.addAttribute("selectedFilterByDate", filterByDate);
+            model.addAttribute("selectedFilterByStartDate", filterByStartDate);
+            model.addAttribute("selectedFilterByEndDate", filterByEndDate);
 
-            // Zapisz wartości filtracji i sortowania w ciasteczkach
             addCookie(response, "categoryName", categoryName);
             addCookie(response, "sortBy", sortBy);
             addCookie(response, "sortDirection", sortDirection);
-            addCookie(response, "filterByDate", filterByDate);
-        }
-        // W przeciwnym razie odczytaj wartości z atrybutów modelu
-        else {
+            addCookie(response, "filterByStartDate", filterByStartDate);
+            addCookie(response, "filterByEndDate", filterByEndDate);
+        } else {
             categoryName = getCookieValue(request, "categoryName");
             sortBy = getCookieValue(request, "sortBy");
             sortDirection = getCookieValue(request, "sortDirection");
-            filterByDate = getCookieValue(request, "filterByDate");
+            filterByStartDate = getCookieValue(request, "filterByStartDate");
+            filterByEndDate = getCookieValue(request, "filterByEndDate");
 
             model.addAttribute("selectedCategory", categoryName);
             model.addAttribute("selectedSortBy", sortBy);
             model.addAttribute("selectedSortDirection", sortDirection);
-            model.addAttribute("selectedFilterByDate", filterByDate);
+            model.addAttribute("selectedFilterByStartDate", filterByStartDate);
+            model.addAttribute("selectedFilterByEndDate", filterByEndDate);
         }
 
-        // Ustaw kierunek sortowania
         if (sortDirection != null && sortDirection.equalsIgnoreCase("asc")) {
             direction = Sort.Direction.ASC;
         }
 
-        // Ustaw pole sortowania
         if (sortBy != null && !sortBy.isEmpty()) {
             if (sortBy.equalsIgnoreCase("name")) {
                 sortField = "name";
@@ -101,6 +100,7 @@ public class InformationsController {
                 sortField = "category";
             } else if (sortBy.equalsIgnoreCase("categoryOccurrences")) {
                 sortField = "categoryOccurrences";
+                categoryName=null;
             }
         }
 
@@ -115,8 +115,9 @@ public class InformationsController {
                         .findAll(Sort.by(direction, sortField));
             }
         }
-        if (filterByDate != null && !filterByDate.isEmpty()) {
-            informations = filterInformationsByDate(informations, filterByDate);
+
+        if (filterByStartDate != null && filterByEndDate != null && !filterByStartDate.isEmpty() && !filterByEndDate.isEmpty()) {
+            informations = filterInformationsByDate(informations, filterByStartDate, filterByEndDate);
         }
 
         model.addAttribute("informations", informations);
@@ -124,7 +125,6 @@ public class InformationsController {
 
         return "informations";
     }
-
 
     @PostMapping("/")
     public String getInformationsPost(@Valid @ModelAttribute Information information, BindingResult bindingResult, Model model) {
@@ -143,26 +143,23 @@ public class InformationsController {
             savedInformation.setCategory(existingCategory);
             informationService.getInformationRepository().save(savedInformation);
         }
-
-
         return "redirect:/informations/";
     }
 
-    private List<Information> filterInformationsByDate(List<Information> informations, String filterByDate) {
+    private List<Information> filterInformationsByDate(List<Information> informations, String filterByStartDate, String filterByEndDate) {
         DateTimeFormatter formatterDisplay = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
         DateTimeFormatter formatterInput = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate startDate = LocalDate.parse(filterByDate, formatterInput);
-        LocalDate currentDate = LocalDate.now();
+        LocalDate startDate = LocalDate.parse(filterByStartDate, formatterInput);
+        LocalDate endDate = LocalDate.parse(filterByEndDate, formatterInput);
 
         return informations.stream()
                 .filter(info -> {
                     LocalDateTime infoDateTime = LocalDateTime.parse(info.getCreationTime(), formatterDisplay);
                     LocalDate infoDate = infoDateTime.toLocalDate();
-                    return !infoDate.isBefore(startDate) && !infoDate.isAfter(currentDate);
+                    return !infoDate.isBefore(startDate) && !infoDate.isAfter(endDate);
                 })
                 .collect(Collectors.toList());
     }
-
 
     @GetMapping("/category")
     public String getInformationsFromCategory(@RequestParam("categoryName") String category, Model model){
@@ -172,7 +169,6 @@ public class InformationsController {
         } else {
             model.addAttribute("informations", informationService.getInformationRepository().findAll());
         }
-
         return "informations";
     }
 

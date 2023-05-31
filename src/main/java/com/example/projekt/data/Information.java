@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -11,9 +12,7 @@ import java.time.format.DateTimeFormatter;
 @Data
 @AllArgsConstructor
 @Entity
-@Getter
-@Setter
-@Table(name = "Informations")
+@Table(name = "information")
 public class Information {
 
     @Id
@@ -33,11 +32,14 @@ public class Information {
 
     @NonNull
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "category",nullable = false)
+    @JoinColumn(name = "category_id",nullable = false)
     private Category category;
 
-
+    @Column(name = "creation_time")
     private String creationTime;
+
+    @Column(name = "link")
+    private String link;
 
     public Information(String name, String description, Category category) {
         this.name = name;
@@ -47,6 +49,7 @@ public class Information {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
         this.creationTime = dateTime.format(formatter);
     }
+
 
     public Information(String name, String description, Category category, String creationTime) {
         this.name = name;

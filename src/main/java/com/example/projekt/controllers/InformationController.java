@@ -65,6 +65,11 @@ public class InformationController {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid information id: " + updatedInformation.getId()));
 
         existingInformation.setName(updatedInformation.getName());
+        if(updatedInformation.getLink().isBlank())
+            existingInformation.setLink(null);
+        else
+            existingInformation.setLink(updatedInformation.getLink());
+
         existingInformation.setCategory(categoryService.getCategoryRepository().findById(updatedInformation.getCategory().getId()).orElse(null));
         existingInformation.setDescription(updatedInformation.getDescription());
         existingInformation.setCreationTime(getDate());
@@ -94,6 +99,8 @@ public class InformationController {
         }
         information.setCategory(categoryService.getCategoryRepository().findById(information.getCategory().getId()).orElse(null));
         information.setCreationTime(getDate());
+        if(information.getLink().isBlank())
+            information.setLink(null);
         informationService.getInformationRepository().save(information);
         return "redirect:/informations/";
     }

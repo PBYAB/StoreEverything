@@ -11,8 +11,9 @@
 <div class="container">
     <h1>Edit Information</h1>
     <hr>
+    <h2>Information Details</h2>
     <form method="post" th:action="@{/informations/edit/{id}(id=${information.id})}" th:object="${information}">
-    <input type="hidden" th:field="*{id}">
+        <input type="hidden" th:field="*{id}">
         <div class="form-group">
             <label for="nameInput">Name:</label>
             <input type="text" id="nameInput" name="name" class="form-control" th:field="*{name}">
@@ -28,9 +29,21 @@
             <textarea id="descriptionInput" name="description" class="form-control" th:text="${information.description}"></textarea>
             <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="alert alert-danger"></div>
         </div>
+        <div class="form-group">
+            <label for="link">Link:</label>
+            <input type="text" id="link" name="link" class="form-control" th:field="*{link}">
+        </div>
 
-        <button type="submit" class="btn btn-primary">Save</button>
+
+        <button type="submit" class="btn btn-primary" style="color: #ffffff; background-color: #0a0aff;">
+            Save
+        </button>
     </form>
 </div>
+<footer>
+    <div class="container">
+        <p>© 2023 StoreEverything. Wszelkie prawa zastrzeżone.</p>
+    </div>
+</footer>
 </body>
 </html>

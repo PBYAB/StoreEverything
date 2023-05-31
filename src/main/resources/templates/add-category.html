@@ -11,6 +11,7 @@
 <div class="container">
     <h1>Add Category</h1>
     <hr>
+    <h2>Category Information</h2>
     <form th:action="@{/informations/add-category}" method="post" th:object="${category}">
         <div class="form-group">
             <label for="name">Name</label>
@@ -24,8 +25,15 @@
             <span th:text="${categoryExistsError}"></span>
         </div>
 
-        <button type="submit" class="btn btn-primary">Add Category</button>
+        <button type="submit" class="btn btn-primary" style="color: #ffffff; background-color: #0a0aff;">
+            Add Category
+        </button>
     </form>
 </div>
+<footer>
+    <div class="container">
+        <p>© 2023 StoreEverything. Wszelkie prawa zastrzeżone.</p>
+    </div>
+</footer>
 </body>
 </html>

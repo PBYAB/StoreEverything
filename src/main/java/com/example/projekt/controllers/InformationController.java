@@ -4,15 +4,16 @@ import com.example.projekt.data.Category;
 import com.example.projekt.data.Information;
 import com.example.projekt.services.CategoryService;
 import com.example.projekt.services.InformationService;
+import com.example.projekt.services.RestWordService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
 
 @Controller
 @RequestMapping("/informations")
@@ -23,6 +24,9 @@ public class InformationController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private RestWordService restWordService;
 
     @GetMapping("/add-category")
     public String addCategoryGet(Model model) {
@@ -35,14 +39,22 @@ public class InformationController {
         if (bindingResult.hasErrors()) {
             return "add-category";
         }
+
+        if (!restWordService.contains(category.getName())) {
+            model.addAttribute("categoryExistsError", "Category does not exist in the dictionary");
+            return "add-category";
+        }
+
         Category existingCategory = categoryService.getCategoryRepository().findByName(category.getName());
         if (existingCategory != null) {
             model.addAttribute("categoryExistsError", "Category already exists");
             return "add-category";
         }
+
         categoryService.getCategoryRepository().save(category);
         return "redirect:/informations/";
     }
+
 
 
     @GetMapping("/edit/{id}")
@@ -54,6 +66,7 @@ public class InformationController {
         model.addAttribute("categories", categoryService.getCategoryRepository().findAll());
         return "edit-information";
     }
+
 
     @PostMapping("/edit/{id}")
     public String editInformationPost(@Valid @ModelAttribute("information") Information updatedInformation, BindingResult bindingResult, Model model) {
@@ -105,7 +118,6 @@ public class InformationController {
         return "redirect:/informations/";
     }
 
-
     @GetMapping("/delete/{id}")
     public String deleteInformation(@PathVariable("id") int id) {
         informationService.getInformationRepository().deleteById(id);
@@ -117,4 +129,5 @@ public class InformationController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
         return dateTime.format(formatter);
     }
+
 }

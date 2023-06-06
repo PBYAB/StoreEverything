@@ -146,6 +146,18 @@ public class InformationsController {
         return "redirect:/informations/";
     }
 
+    @GetMapping("/category")
+    public String getInformationsFromCategory(@RequestParam("categoryName") String category, Model model){
+        Category categoryObj = categoryService.getCategoryRepository().findByName(category);
+        if (categoryObj != null) {
+            model.addAttribute("informations", informationService.getInformationRepository().findAllByCategory_Name(categoryObj.getName(), Sort.by(Sort.Direction.ASC, "creationTime")));
+        } else {
+            model.addAttribute("informations", informationService.getInformationRepository().findAll());
+        }
+        return "informations";
+    }
+
+
     private List<Information> filterInformationsByDate(List<Information> informations, String filterByStartDate, String filterByEndDate) {
         DateTimeFormatter formatterDisplay = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
         DateTimeFormatter formatterInput = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -161,23 +173,13 @@ public class InformationsController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/category")
-    public String getInformationsFromCategory(@RequestParam("categoryName") String category, Model model){
-        Category categoryObj = categoryService.getCategoryRepository().findByName(category);
-        if (categoryObj != null) {
-            model.addAttribute("informations", informationService.getInformationRepository().findAllByCategory_Name(categoryObj.getName(), Sort.by(Sort.Direction.ASC, "creationTime")));
-        } else {
-            model.addAttribute("informations", informationService.getInformationRepository().findAll());
-        }
-        return "informations";
-    }
+
 
     public static String getDate(){
         LocalDateTime dateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-        String formattedDateTime = dateTime.format(formatter);
 
-        return formattedDateTime;
+        return dateTime.format(formatter);
     }
 
     private void addCookie(HttpServletResponse response, String name, String value) {

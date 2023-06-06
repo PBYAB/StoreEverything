@@ -38,11 +38,14 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String loginUser(@RequestParam("login") String login, @RequestParam("password") String password ) {
-        User user = userService.getUserRepository().getUserByLoginAndPassword(login,password);
+    public String loginUser(@RequestParam("login") String login, @RequestParam("password") String password, Model model) {
+        User user = userService.getUserRepository().getUserByLoginAndPassword(login, password);
 
-        if(user == null)
+        if (user == null) {
+            model.addAttribute("noUser", "Niepoprawne dane");
+            model.addAttribute("user", new User());
             return "login";
-        return "redirect:/dashboard";
+        }
+        return "redirect:/informations/";
     }
 }

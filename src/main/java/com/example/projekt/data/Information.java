@@ -1,10 +1,10 @@
 package com.example.projekt.data;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.*;
-import org.hibernate.validator.constraints.URL;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NonNull;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -41,7 +41,8 @@ public class Information {
     @Column(name = "link")
     private String link;
 
-    public Information(String name, String description, Category category) {
+
+    public Information(String name, String description, Category categor) {
         this.name = name;
         this.description = description;
         this.category = category;

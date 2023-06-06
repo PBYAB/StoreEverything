@@ -26,6 +26,5 @@ public class Category {
     private int id;
 
     public Category() {
-
     }
 }

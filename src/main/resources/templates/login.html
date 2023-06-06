@@ -22,6 +22,9 @@
       <input type="password" id="passwordInput" name="password" class="form-control" th:field="*{password}">
       <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="alert alert-danger"></div>
     </div>
+    <div th:if="${noUser}" class="alert alert-danger" role="alert">
+      <span th:text="${noUser}"></span>
+    </div>
     <button type="submit" class="btn btn-primary">Login</button>
   </form>
 </div>

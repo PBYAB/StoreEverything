@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Share Information</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+  <style>
+    .nav-link {
+      color: #0a0aff;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <ul class="nav">
+    <li class="nav-link">
+      <a sec:authorize-url="/informations/" class="nav-link" th:href="@{/informations/}">Home</a>
+    </li>
+    <li class="nav-link">
+      <a sec:authorize-url="/informations/add-category" class="nav-link" th:href="@{/informations/add-category}">Add Category</a>
+    </li>
+    <li class="nav-link">
+      <a sec:authorize-url="/informations/add-information" class="nav-link" th:href="@{/informations/add-information}">Add Information</a>
+    </li>
+    <li class="nav-link">
+      <a sec:authorize-url="/user/logout" class="nav-link" th:href="@{/user/logout}">Logout</a>
+    </li>
+  </ul>
+  <h1>Share Information</h1>
+
+  <form method="post" th:action="@{/informations/share/{id}(id=${information.id})}" th:object="${information}">
+    <div class="form-group">
+      <label for="user">Select User:</label>
+      <select id="user" name="user" class="form-control">
+        <option th:each="user : ${users}" th:value="${user.login}" th:text="${user.login}"></option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Share</button>
+  </form>
+
+  <hr>
+
+  <div class="card">
+    <div class="card-header">
+      <h2>Information Details</h2>
+    </div>
+    <div class="card-body">
+      <span th:text="|Date: ${information.creationTime} |"></span>
+      <br>
+      <span th:text="|Category: ${information.category.name} |"></span>
+      <br>
+      <span th:text="|Description: ${information.description} |"></span>
+      <br>
+      <span th:if="${information.link != null}">
+          Link:
+          <a th:href="${information.link}" target="_blank" th:text="${information.link}"></a>
+          <br>
+      </span>
+    </div>
+  </div>
+
+</div>
+<footer>
+  <div class="container">
+    <p>© 2023 StoreEverything. Wszelkie prawa zastrzeżone.</p>
+  </div>
+</footer>
+</body>
+</html>

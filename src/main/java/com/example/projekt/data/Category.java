@@ -25,6 +25,9 @@ public class Category {
     @Column(name= "id", nullable = false)
     private int id;
 
+    @Column(name = "login", nullable = false)
+    private String login;
+
     public Category() {
     }
 }

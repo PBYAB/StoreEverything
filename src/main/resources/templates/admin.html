@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+    </style>
+    <style>
+        .nav-link {
+            color: #0a0aff;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <ul class="nav">
+        <li class="nav-item">
+            <a sec:authorize-url="/user/logout"  class="nav-link" th:href="@{/user/logout}">Logout</a>
+        </li>
+    </ul>
+    <h1>Admin Panel</h1>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Login</th>
+            <th>Current Role</th>
+            <th>New Role</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <th:block th:each="authority : ${authorities}">
+            <tr>
+                <form th:action="@{/user/admin/update-role}" method="POST">
+                <td th:text="${authority.login}"></td>
+                    <td th:text="${authority.authority}"></td>
+                    <td>
+                        <select name="newRole" class="form-control">
+                            <option value="ROLE_FULL_USER">Full User</option>
+                            <option value="ROLE_LIMITED_USER">Limited User</option>
+                            <option value="ROLE_ADMIN">Admin</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="hidden" name="login" th:value="${authority.login}" />
+                        <button type="submit" class="btn btn-primary" style="color: #ffffff; background-color: #0a0aff;">Update Role</button>
+                    </td>
+                </form>
+            </tr>
+        </th:block>
+        </tbody>
+    </table>
+</div>
+<footer>
+    <div class="container">
+        <p>© 2023 StoreEverything. Wszelkie prawa zastrzeżone.</p>
+    </div>
+</footer>
+</body>
+</html>

@@ -1,6 +1,5 @@
 package com.example.projekt.data;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +8,8 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @Entity
@@ -16,7 +17,6 @@ import lombok.Data;
 public class User {
 
     @Id
-    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int id;
@@ -36,7 +36,6 @@ public class User {
     @Pattern(regexp = "^[a-z]+$", message = "Login powinien składać się tylko z małych liter")
     private String login;
 
-    @JsonIgnore
     @Column(name = "password")
     @Size(min = 5, message = "Hasło powinno mieć co najmniej 5 znaków")
     private String password;
@@ -47,6 +46,5 @@ public class User {
     private Integer age;
 
     public User() {
-
     }
 }

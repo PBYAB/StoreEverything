@@ -23,8 +23,8 @@ public class InformationService {
 
     }
 
-    public List<Information> getAllInformationsSortedByCategoryOccurrences(Sort sort) {
-        List<Information> informations = informationRepository.findAll();
+    public List<Information> getAllInformationsSortedByCategoryOccurrences(Sort sort, String login, boolean isShared) {
+        List<Information> informations = informationRepository.findAllByLoginAndShared(login,isShared);
         informations.sort(Comparator.comparingInt(o -> getCategoryOccurrences(o.getCategory().getName(), informations)));
         if (sort.getOrderFor("categoryOccurrences").isDescending()) {
             Collections.reverse(informations);

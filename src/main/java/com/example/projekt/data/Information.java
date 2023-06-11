@@ -41,8 +41,14 @@ public class Information {
     @Column(name = "link")
     private String link;
 
+    @Column(name = "login", nullable = false)
+    private String login;
 
-    public Information(String name, String description, Category categor) {
+    @Column(name = "shared", columnDefinition = "boolean default false")
+    private boolean shared;
+
+
+    public Information(String name, String description, Category category) {
         this.name = name;
         this.description = description;
         this.category = category;
@@ -60,6 +66,5 @@ public class Information {
     }
 
     public Information() {
-
     }
 }

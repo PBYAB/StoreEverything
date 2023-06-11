@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <title>Informations</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+  <style>
+    .card-text {
+      word-wrap: break-word;
+    }
+  </style>
+
+  <style>
+    .nav-link {
+      color: #0a0aff;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <ul class="nav">
+    <li class="nav-item">
+      <a sec:authorize-url="/informations/" class="nav-link" th:href="@{/informations/}">Home</a>
+    </li>
+    <li class="nav-item">
+      <a sec:authorize-url="/informations/add-category" class="nav-link" th:href="@{/informations/add-category}">Add Category</a>
+    </li>
+    <li class="nav-item">
+      <a sec:authorize-url="/informations/add-information" class="nav-link" th:href="@{/informations/add-information}">Add Information</a>
+    </li>
+    <li class="nav-item">
+      <a sec:authorize-url="/user/logout" class="nav-link" th:href="@{/user/logout}">Logout</a>
+    </li>
+  </ul>
+  <h1 th:text="|Informations in the database|"></h1>
+  <hr>
+  <form method="get" action="#" th:action="@{/informations/shared}">
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        <label for="filterByStartDate">Filter by start date:</label>
+        <input type="date" id="filterByStartDate" name="filterByStartDate" class="form-control" th:value="${selectedFilterByStartDate}">
+      </div>
+      <div class="form-group col-md-4">
+        <label for="filterByEndDate">Filter by end date:</label>
+        <input type="date" id="filterByEndDate" name="filterByEndDate" class="form-control" th:value="${selectedFilterByEndDate}">
+      </div>
+      <div class="form-group col-md-4">
+        <label for="categorySelect">Filter by category:</label>
+        <select id="categorySelect" name="categoryName" class="form-control">
+          <option value="">All</option>
+          <option th:each="category : ${categories}" th:value="${category.name}" th:selected="${category.name == selectedCategory}" th:text="${category.name}"></option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="sortBySelect">Sort by:</label>
+        <select id="sortBySelect" name="sortBy" class="form-control">
+          <option value="name" th:selected="${selectedSortBy == 'name'}">Name</option>
+          <option value="creationTime" th:selected="${selectedSortBy == 'creationTime'}">Creation Time</option>
+          <option value="category" th:selected="${selectedSortBy == 'category'}">Category</option>
+          <option value="categoryOccurrences" th:selected="${selectedSortBy == 'categoryOccurrences'}">Category Occurrences</option>
+        </select>
+      </div>
+
+      <div class="form-group col-md-6">
+        <label for="sortDirectionSelect">Sort direction:</label>
+        <select id="sortDirectionSelect" name="sortDirection" class="form-control">
+          <option value="ASC" th:selected="${selectedSortDirection == 'ASC'}">Ascending</option>
+          <option value="DESC" th:selected="${selectedSortDirection == 'DESC'}">Descending</option>
+        </select>
+      </div>
+    </div>
+
+    <button th:action="@{/informations/shared}" type="submit" class="btn btn-primary" style="color: #ffffff; background-color: #0a0aff;">
+      Filter and Sort
+    </button>
+    <button th:action="@{/informations/shared}" type="submit" name="resetFilters" value="true" class="btn btn-danger">
+      Reset Filters
+    </button>
+  </form>
+  <hr>
+  <ol class="list-group">
+    <li th:each="information : ${informations}" class="list-group-item">
+      <h5 class="card-title" th:text="|Name: ${information.name} |"></h5>
+      <p class="card-text">
+        <span th:text="|Date: ${information.creationTime} |"></span>
+        <br>
+        <span th:text="|Category: ${information.category.name} |"></span>
+        <br>
+        <span th:text="|Description: ${information.description} |"></span>
+        <br>
+        <span th:if="${information.link != null}">
+                    Link:
+                    <a th:href="${information.link}" target="_blank" th:text="${information.link}"></a>
+                    <br>
+        </span>
+      </p>
+    </li>
+  </ol>
+
+
+
+  <div class="container">
+    <div class="text-right">
+      <a sec:authorize-url="/informations/" th:href="@{/informations/}"
+         class="btn btn-success" style="color: #ffffff; background-color: #146126; margin-left: 10px;">Go To Yours</a>
+    </div>
+  </div>
+</div>
+<footer>
+  <div class="container">
+    <p>© 2023 StoreEverything. All rights reserved.</p>
+  </div>
+</footer>
+</body>
+</html>

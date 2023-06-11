@@ -6,9 +6,23 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
           crossorigin="anonymous">
+
+    <style>
+        .nav-link {
+            color: #0a0aff;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
+    <ul class="nav">
+        <li class="nav-item">
+            <a class="nav-link"  th:href="@{/user/login}">Log in</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link"  th:href=" @{/}">Home</a>
+        </li>
+    </ul>
     <h1>User Registration</h1>
     <hr>
     <form method="post" th:action="@{register}" th:object="${user}">
@@ -26,6 +40,9 @@
             <label for="loginInput">Login:</label>
             <input type="text" id="loginInput" name="login" class="form-control" th:field="*{login}">
             <div th:if="${#fields.hasErrors('login')}" th:errors="*{login}" class="alert alert-danger"></div>
+            <div th:if="${error}" class="alert alert-danger" role="alert">
+                 <span th:text="${error}"></span>
+            </div>
         </div>
         <div class="form-group">
             <label for="passwordInput">Password:</label>
@@ -37,8 +54,13 @@
             <input type="number" id="ageInput" name="age" class="form-control" th:field="*{age}">
             <div th:if="${#fields.hasErrors('age')}" th:errors="*{age}" class="alert alert-danger"></div>
         </div>
-        <button type="submit" class="btn btn-primary">Register</button>
+        <button type="submit" class="btn btn-primary" style="color: #ffffff; background-color: #0a0aff;">Register</button>
     </form>
 </div>
+<footer>
+    <div class="container">
+        <p>© 2023 StoreEverything. Wszelkie prawa zastrzeżone.</p>
+    </div>
+</footer>
 </body>
 </html>

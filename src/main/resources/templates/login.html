@@ -6,27 +6,44 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
         crossorigin="anonymous">
+
+  <style>
+    .nav-link {
+      color: #0a0aff;
+    }
+  </style>
 </head>
 <body>
 <div class="container">
+  <ul class="nav">
+    <li class="nav-item">
+      <a class="nav-link" th:href="@{/user/register}">Registration</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" th:href="@{/}">Home</a>
+    </li>
+  </ul>
   <h1>User Login</h1>
   <hr>
-  <form method="post" th:action="@{login}" th:object="${user}">
+  <form method="post" th:action="@{/user/login}">
     <div class="form-group">
       <label for="loginInput">Login:</label>
-      <input type="text" id="loginInput" name="login" class="form-control" th:field="*{login}">
-      <div th:if="${#fields.hasErrors('login')}" th:errors="*{login}" class="alert alert-danger"></div>
+      <input type="text" id="loginInput" name="login" class="form-control">
     </div>
     <div class="form-group">
       <label for="passwordInput">Password:</label>
-      <input type="password" id="passwordInput" name="password" class="form-control" th:field="*{password}">
-      <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="alert alert-danger"></div>
+      <input type="password" id="passwordInput" name="password" class="form-control">
     </div>
-    <div th:if="${noUser}" class="alert alert-danger" role="alert">
-      <span th:text="${noUser}"></span>
+    <div th:if="${param.error}" class="alert alert-danger" role="alert">
+      Invalid login or password
     </div>
-    <button type="submit" class="btn btn-primary">Login</button>
+    <button type="submit" class="btn btn-primary" style="color: #ffffff; background-color: #0a0aff;">Login</button>
   </form>
 </div>
+<footer>
+  <div class="container">
+    <p>© 2023 StoreEverything. Wszelkie prawa zastrzeżone.</p>
+  </div>
+</footer>
 </body>
 </html>
